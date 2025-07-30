@@ -1,0 +1,19 @@
+# .NET
+bin/
+obj/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+# Windows Installer files
+*.pdb
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+# Rider/JetBrains IDE
+.idea/
+.vscode/
