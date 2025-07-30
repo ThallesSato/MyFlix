@@ -16,7 +16,7 @@ namespace MyFlix.Application.Validators
             RuleFor(x => x.AnoLancamento)
                 .NotEmpty()
                 .WithMessage("O ano de lançamento é obrigatório")
-                .LessThan(1800)
+                .GreaterThan(1800)
                 .WithMessage("O ano do filme não pode antes de 1800");
 
             RuleFor(x => x.Genero)
