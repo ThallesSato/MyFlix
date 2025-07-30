@@ -88,6 +88,20 @@ app.MapPut("Filme/{id}", async ([FromRoute] int id,[FromBody] Filme filme, [From
     return Results.Ok();
 });
 
+app.MapPut("Filme/Nota/{id}", async ([FromRoute] int id,[FromBody] int nota, [FromServices] IFilmeService filmeService, IUnitOfWork unitOfWork) =>
+{
+    if (nota<1 || nota>5)
+    {
+        return Results.BadRequest("A nota deve estar entre 1 e 5.");
+    }
+
+    if (!await filmeService.AdicionaNotaAoFilmeByIdAsync(id, nota))
+        return Results.NotFound();
+        
+    await unitOfWork.SaveChangesAsync();
+    return Results.Ok();
+});
+
 app.MapDelete("Filme/{id}",
     async ([FromRoute] int id, [FromServices] IFilmeService filmeService, IUnitOfWork unitOfWork) =>
     {

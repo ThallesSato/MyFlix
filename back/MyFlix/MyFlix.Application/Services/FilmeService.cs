@@ -48,4 +48,17 @@ public class FilmeService : IFilmeService
         _filmeRepository.UpdateFilme(filmeOld);
         return true;
     }
+    
+    public async Task<bool> AdicionaNotaAoFilmeByIdAsync(int id, int nota)
+    {
+        var filmeOld = await _filmeRepository.GetFilmeByIdAsyncOrNull(id);
+        if (filmeOld == null) 
+            return false;
+        
+        filmeOld.Nota = nota;
+        filmeOld.Status = true;
+        
+        _filmeRepository.UpdateFilme(filmeOld);
+        return true;
+    }
 }

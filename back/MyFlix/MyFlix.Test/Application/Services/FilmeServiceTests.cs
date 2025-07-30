@@ -206,4 +206,59 @@ public class FilmeServiceTests
         _mockFilmeRepository.Verify(repo => repo.GetFilmeByIdAsyncOrNull(id), Times.Once);
         _mockFilmeRepository.Verify(repo => repo.UpdateFilme(It.IsAny<Filme>()), Times.Never);
     }
+
+    [Fact]
+    public async Task AdicionaNotaAoFilmeByIdAsync_QuandoFilmeExiste_DeveRetornarTrue()
+    {
+        // Arrange
+        var id = 1;
+        var notaEsperada = 4;
+        var filme = new Filme
+        {
+            Id = id,
+            Titulo = "Filme Teste",
+            AnoLancamento = 2000,
+            Genero = "teste",
+            Status = false
+        };
+
+        _mockFilmeRepository
+            .Setup(repo => repo.GetFilmeByIdAsyncOrNull(id))
+            .ReturnsAsync(filme);
+
+        _mockFilmeRepository
+            .Setup(repo => repo.UpdateFilme(It.IsAny<Filme>()))
+            .Verifiable();
+
+        // Act
+        var resultado = await _filmeService.AdicionaNotaAoFilmeByIdAsync(id, notaEsperada);
+
+        // Assert
+        Assert.True(resultado);
+        _mockFilmeRepository.Verify(repo => repo.GetFilmeByIdAsyncOrNull(id), Times.Once);
+        _mockFilmeRepository.Verify(repo => repo.UpdateFilme(It.Is<Filme>(f =>
+            f.Id == id &&
+            f.Status == true &&
+            f.Nota == notaEsperada)), Times.Once);
+    }
+
+    [Fact]
+    public async Task AdicionaNotaAoFilmeByIdAsync_QuandoFilmeNaoExiste_DeveRetornarFalse()
+    {
+        // Arrange
+        var id = 999;
+        var nota = 5;
+
+        _mockFilmeRepository
+            .Setup(repo => repo.GetFilmeByIdAsyncOrNull(id))
+            .ReturnsAsync((Filme?)null);
+
+        // Act
+        var resultado = await _filmeService.AdicionaNotaAoFilmeByIdAsync(id, nota);
+
+        // Assert
+        Assert.False(resultado);
+        _mockFilmeRepository.Verify(repo => repo.GetFilmeByIdAsyncOrNull(id), Times.Once);
+        _mockFilmeRepository.Verify(repo => repo.UpdateFilme(It.IsAny<Filme>()), Times.Never);
+    }
 }
