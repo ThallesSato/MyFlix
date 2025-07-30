@@ -1,4 +1,5 @@
-﻿using MyFlix.Application.Dtos.Input;
+﻿using System.Diagnostics.CodeAnalysis;
+using MyFlix.Application.Dtos.Input;
 using MyFlix.Application.Interfaces;
 using MyFlix.Domain.Models;
 using MyFlix.Infra.Interfaces;
@@ -30,5 +31,21 @@ public class FilmeService : IFilmeService
     public async Task<bool> DeleteFilmeByIdAsync(int id)
     {
         return await _filmeRepository.DeleteFilmeByIdAsync(id);
+    }
+    
+    public async Task<bool> UpdateFilmeByIdAsync(int id, Filme filme)
+    {
+        var filmeOld = await _filmeRepository.GetFilmeByIdAsyncOrNull(id);
+        if (filmeOld == null) 
+            return false;
+        
+        filmeOld.Titulo = filme.Titulo;
+        filmeOld.AnoLancamento = filme.AnoLancamento;
+        filmeOld.Genero = filme.Genero;
+        filmeOld.Status = filme.Status;
+        filmeOld.Nota = filme.Nota;
+        
+        _filmeRepository.UpdateFilme(filmeOld);
+        return true;
     }
 }

@@ -18,6 +18,11 @@ public class FilmeRepository  : IFilmeRepository
         return await _context.Filmes.ToListAsync();
     }
     
+    public async Task<Filme?> GetFilmeByIdAsyncOrNull(int id)
+    {
+        return await _context.Filmes.FindAsync(id);
+    }
+    
     public async Task PostFilmeAsync(Filme filme)
     {
         await _context.Filmes.AddAsync(filme);
@@ -29,5 +34,10 @@ public class FilmeRepository  : IFilmeRepository
         if (filme == null) return false;
         _context.Filmes.Remove(filme);
         return true;
+    }
+    
+    public void UpdateFilme(Filme filme)
+    {
+         _context.Filmes.Update(filme);
     }
 }

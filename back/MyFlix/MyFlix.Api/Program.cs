@@ -1,6 +1,5 @@
 using FluentValidation;
 using FluentValidation.Results;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyFlix.Application.Dtos.Input;
@@ -24,6 +23,7 @@ builder.Services.AddScoped<IFilmeRepository, FilmeRepository>();
 builder.Services.AddScoped<IFilmeService, FilmeService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IValidator<FilmeDto>, FilmeDtoValidator>();
+builder.Services.AddScoped<IValidator<Filme>, FilmeValidator>();
 
 var app = builder.Build();
 
@@ -71,6 +71,22 @@ app.MapPost("/Filme",
             return Results.BadRequest(e.Message);
         }
     });
+
+app.MapPut("Filme/{id}", async ([FromRoute] int id,[FromBody] Filme filme, [FromServices] IValidator<Filme> validator, IFilmeService filmeService, IUnitOfWork unitOfWork) =>
+{
+    ValidationResult validationResult = await validator.ValidateAsync(filme);
+
+    if (!validationResult.IsValid)
+    {
+        return Results.ValidationProblem(validationResult.ToDictionary());
+    }
+
+    if (!await filmeService.UpdateFilmeByIdAsync(id, filme))
+        return Results.NotFound();
+        
+    await unitOfWork.SaveChangesAsync();
+    return Results.Ok();
+});
 
 app.MapDelete("Filme/{id}",
     async ([FromRoute] int id, [FromServices] IFilmeService filmeService, IUnitOfWork unitOfWork) =>

@@ -8,4 +8,5 @@ public interface IFilmeService
     Task<List<Filme>> GetAllFilmesAsync();
     Task PostFilmeAsync(FilmeDto filmeDto);
     Task<bool> DeleteFilmeByIdAsync(int id);
+    Task<bool> UpdateFilmeByIdAsync(int id, Filme filme);
 }
