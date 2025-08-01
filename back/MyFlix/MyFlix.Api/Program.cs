@@ -112,7 +112,7 @@ app.MapPost("/Filme",
         {
             await filmeService.PostFilmeAsync(filmeDto);
             await unitOfWork.SaveChangesAsync();
-            return Results.Ok();
+            return Results.Created();
         }
         catch (Exception e)
         {
@@ -126,7 +126,7 @@ app.MapPost("/Filme",
     Summary = "Cria um novo filme",
     Description = "Adiciona um novo filme ao catálogo"
 })
-.Produces(200)
+.Produces(201)
 .Produces<ErroDto>(400);
 
 app.MapPut("Filme/{id}", async ([FromRoute] int id, [FromBody] Filme filme, [FromServices] IValidator<Filme> validator, IFilmeService filmeService, IUnitOfWork unitOfWork) =>
@@ -144,7 +144,7 @@ app.MapPut("Filme/{id}", async ([FromRoute] int id, [FromBody] Filme filme, [Fro
         return Results.NotFound(new ErroDto("Filme não encontrado", StatusCodes.Status404NotFound));
     
     await unitOfWork.SaveChangesAsync();
-    return Results.Ok();
+    return Results.NoContent();
 })
 .WithName("UpdateFilme")
 .WithOpenApi(operation => new OpenApiOperation(operation)
@@ -152,7 +152,7 @@ app.MapPut("Filme/{id}", async ([FromRoute] int id, [FromBody] Filme filme, [Fro
     Summary = "Atualiza um filme",
     Description = "Atualiza os dados de um filme existente pelo ID"
 })
-.Produces(200)
+.Produces(204)
 .Produces<ErroDto>(400)
 .Produces<ErroDto>(404);
 
@@ -167,7 +167,7 @@ app.MapPut("Filme/Nota/{id}", async ([FromRoute] int id, [FromBody] int nota, [F
         return Results.NotFound(new ErroDto("Filme não encontrado", StatusCodes.Status404NotFound));
     
     await unitOfWork.SaveChangesAsync();
-    return Results.Ok();
+    return Results.NoContent();
 })
 .WithName("AtualizarNota")
 .WithOpenApi(operation => new OpenApiOperation(operation)
@@ -175,7 +175,7 @@ app.MapPut("Filme/Nota/{id}", async ([FromRoute] int id, [FromBody] int nota, [F
     Summary = "Atualiza a nota de um filme",
     Description = "Adiciona ou atualiza a nota de um filme (entre 1 e 5)"
 })
-.Produces(200)
+.Produces(204)
 .Produces<ErroDto>(400)
 .Produces<ErroDto>(404);
 
@@ -189,7 +189,7 @@ app.MapDelete("Filme/{id}",
                 return Results.NotFound(new ErroDto("Filme não encontrado", StatusCodes.Status404NotFound));
             
             await unitOfWork.SaveChangesAsync();
-            return Results.Ok();
+            return Results.NoContent();
         }
         catch (Exception e)
         {
@@ -203,7 +203,7 @@ app.MapDelete("Filme/{id}",
     Summary = "Remove um filme",
     Description = "Exclui um filme do catálogo pelo ID"
 })
-.Produces(200)
+.Produces(204)
 .Produces<ErroDto>(400)
 .Produces<ErroDto>(404);
 
