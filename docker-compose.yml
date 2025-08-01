@@ -1,0 +1,57 @@
+version: "3.9"
+ 
+services:
+
+  frontend:
+
+    build:
+
+      context: ./front/
+
+      dockerfile: Dockerfile # Nome do Dockerfile do Node
+
+    container_name: myflix_frontend
+
+    ports:
+
+      - "3000:3000"
+
+    environment:
+
+      NODE_ENV: production
+
+    depends_on:
+
+      - backend
+
+    networks:
+
+      - myflix_network
+ 
+  backend:
+
+    build:
+
+      context: ./back/MyFlix
+
+      dockerfile: Dockerfile # Nome do Dockerfile do .NET
+
+    container_name: myflix_backend
+
+    ports:
+
+      - "5096:8080"
+
+    environment:
+
+      ASPNETCORE_ENVIRONMENT: Production
+
+    networks:
+
+      - myflix_network
+ 
+networks:
+
+  myflix_network:
+
+    driver: bridge 
